@@ -6,21 +6,40 @@ Console.OutputEncoding = Encoding.UTF8;
 
 Console.WriteLine("Credit calculator");
 
-Console.WriteLine("Какая сумма кредита?");
-var c = double.Parse(Console.ReadLine()!);
-Console.WriteLine("Какая процентная ставка?");
-var percentPerYear = double.Parse(Console.ReadLine()!) / 100;
-Console.WriteLine("На сколько месяцев берёте креди?");
-var s = int.Parse(Console.ReadLine()!);
+while (true)
+{
+    Console.WriteLine("Какая сумма кредита?");
+    var c = double.Parse(Console.ReadLine()!);
+    Console.WriteLine("Какая процентная ставка?");
+    var percentPerYear = double.Parse(Console.ReadLine()!) / 100;
+    Console.WriteLine("На сколько месяцев берёте креди?");
+    var s = int.Parse(Console.ReadLine()!);
 
-var calculator = new Calculator();
+    Console.WriteLine(
+        $"Какой тип расчёт использовать. {CalcType.Annuity}({(int)CalcType.Annuity}) или {CalcType.Differentiated}({(int)CalcType.Differentiated})");
 
-var calculationResult = calculator.Calculate(new CalculationParameters(
-    c,
-    percentPerYear,
-    s
-));
+    if (Enum.TryParse<CalcType>(Console.ReadLine()!, true, out var calcType))
+    {
+        var creditCalculatorFactory = new CreditCalculatorFactory();
+        var calculator = creditCalculatorFactory.CreateCalculator(calcType);
 
-calculationResult.Print();
+        var calculationResult = calculator.Calculate(new CalculationParameters(
+            c,
+            percentPerYear,
+            s
+        ));
 
-Console.ReadKey();
+        calculationResult.Print();
+    }
+    else
+    {
+        Console.WriteLine("Не корректный тип расчёта.");
+    }
+
+    Console.WriteLine("Выйти из программы? y/n");
+    var exitCommand = Console.ReadLine()!;
+    if (string.Equals(exitCommand, "y", StringComparison.InvariantCultureIgnoreCase))
+    {
+        break;
+    }
+}
