@@ -8,7 +8,7 @@ internal class DifferentiatedCreditCalculator : ICreditCalculator
     {
         //https://finuslugi.ru/glossariy/raschyot_differencirovannogo_platezha
         var m = parameters.PercentPerYear / 12;
-        var mainDebtPayment = Math.Round(parameters.CreditSum / parameters.PeriodsCount, 2);
+        var mainDebtPayment = parameters.CreditSum / parameters.PeriodsCount;
 
         var debt = parameters.CreditSum;
 
@@ -18,14 +18,14 @@ internal class DifferentiatedCreditCalculator : ICreditCalculator
         var sumPercentPayment = 0d;
 
         var paymentInfos = new List<PaymentInfo>();
-        while (debt > 0)
+        while (debt >= 0.01)
         {
             paymentNumber++;
-            var percentPayment = Math.Round(debt * m, 2);
+            var percentPayment = debt * m;
 
             var paymentForCalculation = percentPayment + mainDebtPayment;
 
-            debt = Math.Round(debt - mainDebtPayment, 2);
+            debt -= mainDebtPayment;
             var paymentInfo = new PaymentInfo(
                 paymentNumber,
                 paymentForCalculation,
@@ -41,7 +41,7 @@ internal class DifferentiatedCreditCalculator : ICreditCalculator
             sumPercentPayment += percentPayment;
         }
 
-        var mainDebtInPercent = Math.Round(parameters.CreditSum / sumPayment, 2) * 100;
+        var mainDebtInPercent = parameters.CreditSum / sumPayment * 100;
         var percentsInPercent = 100 - mainDebtInPercent;
 
         return new CalculationResult(
