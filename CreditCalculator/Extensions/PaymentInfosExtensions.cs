@@ -1,5 +1,7 @@
 ﻿namespace CreditCalculator.Extensions;
 
+using Core;
+
 internal static class PaymentInfosExtensions
 {
     public static void Print(

@@ -1,6 +1,6 @@
-﻿namespace CreditCalculator;
+﻿namespace CreditCalculator.Core;
 
-internal record PaymentInfo(
+public record PaymentInfo(
     int PaymentNumber,
     double Payment,
     double MainDebtPayment,

@@ -1,6 +1,6 @@
-﻿namespace CreditCalculator;
+﻿namespace CreditCalculator.Core;
 
-internal record CalculationResult(
+public record CalculationResult(
     double? Payment,
     double SumPayment,
     double SumMainDebtPayment,
