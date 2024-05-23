@@ -1,29 +1,38 @@
-﻿namespace CreditCalculator;
+﻿namespace CreditCalculator.Core;
 
-internal class DifferentiatedCreditCalculator : ICreditCalculator
+internal class AnnuityCreditCalculator : ICreditCalculator
 {
     public CalculationResult Calculate(
         CalculationParameters parameters
     )
     {
-        //https://finuslugi.ru/glossariy/raschyot_differencirovannogo_platezha
-        var m = parameters.PercentPerYear / 12;
-        var mainDebtPayment = parameters.CreditSum / parameters.PeriodsCount;
+        var m = parameters.Rate / 12;
+        var k = m * Math.Pow(1 + m, parameters.Period) / (Math.Pow(1 + m, parameters.Period) - 1);
+        var x = parameters.Credit * k;
 
-        var debt = parameters.CreditSum;
+        var payment = x;
+
+        var debt = parameters.Credit;
 
         var paymentNumber = 0;
         var sumPayment = 0d;
         var sumMainDebtPayment = 0d;
         var sumPercentPayment = 0d;
 
+        var paymentForCalculation = payment;
         var paymentInfos = new List<PaymentInfo>();
-        while (debt >= 0.01)
+        while (debt > 0.01)
         {
             paymentNumber++;
             var percentPayment = debt * m;
+            var mainDebtPayment = paymentForCalculation - percentPayment;
 
-            var paymentForCalculation = percentPayment + mainDebtPayment;
+            if (debt < mainDebtPayment)
+            {
+                mainDebtPayment = debt;
+                percentPayment = 0;
+                paymentForCalculation = mainDebtPayment;
+            }
 
             debt -= mainDebtPayment;
             var paymentInfo = new PaymentInfo(
@@ -31,21 +40,19 @@ internal class DifferentiatedCreditCalculator : ICreditCalculator
                 paymentForCalculation,
                 mainDebtPayment,
                 percentPayment,
-                debt
-            );
-
+                debt);
             paymentInfos.Add(paymentInfo);
 
             sumPayment += paymentForCalculation;
             sumMainDebtPayment += mainDebtPayment;
             sumPercentPayment += percentPayment;
         }
-
-        var mainDebtInPercent = parameters.CreditSum / sumPayment * 100;
+        
+        var mainDebtInPercent = parameters.Credit / sumPayment * 100;
         var percentsInPercent = 100 - mainDebtInPercent;
 
         return new CalculationResult(
-            null,
+            payment,
             sumPayment,
             sumMainDebtPayment,
             sumPercentPayment,

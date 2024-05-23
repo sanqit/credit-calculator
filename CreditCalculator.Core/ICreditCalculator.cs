@@ -1,6 +1,6 @@
-﻿namespace CreditCalculator;
+﻿namespace CreditCalculator.Core;
 
-internal interface ICreditCalculator
+public interface ICreditCalculator
 {
     CalculationResult Calculate(
         CalculationParameters parameters

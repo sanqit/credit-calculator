@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using CreditCalculator;
+using CreditCalculator.Core;
 using CreditCalculator.Extensions;
 
 Console.OutputEncoding = Encoding.UTF8;

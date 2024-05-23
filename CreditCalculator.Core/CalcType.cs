@@ -1,4 +1,4 @@
-﻿namespace CreditCalculator;
+﻿namespace CreditCalculator.Core;
 
 public enum CalcType
 {

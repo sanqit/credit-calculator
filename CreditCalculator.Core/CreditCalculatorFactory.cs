@@ -1,6 +1,6 @@
-﻿namespace CreditCalculator;
+﻿namespace CreditCalculator.Core;
 
-internal class CreditCalculatorFactory
+public class CreditCalculatorFactory
 {
     public ICreditCalculator CreateCalculator(
         CalcType calcType
