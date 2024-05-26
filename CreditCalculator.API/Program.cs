@@ -1,7 +1,7 @@
 using CreditCalculator.API.Converters;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using CreditCalculator.Core;
+using CreditCalculator.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +20,8 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "CreditCalculator.API.xml"));
 });
-builder.Services.AddScoped<CreditCalculatorFactory>();
+
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 

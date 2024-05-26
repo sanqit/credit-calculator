@@ -4,12 +4,15 @@ using Core;
 using ViewModels;
 using Mappers;
 using Microsoft.AspNetCore.Mvc;
+using Services.CalculationHistory;
+using Services.CalculationHistory.Models;
 
 /// <inheritdoc />
 [ApiController]
 [Route("credit-calculator")]
 public class CreditCalculatorController(
-    CreditCalculatorFactory creditCalculatorFactory
+    CreditCalculatorFactory creditCalculatorFactory,
+    ICalculationHistoryService calculationHistoryService
 ) : ControllerBase
 {
     /// <summary>
@@ -28,6 +31,20 @@ public class CreditCalculatorController(
             .CreateCalculator(calcType);
         var parameters = model.MapFromViewModel();
         var result = calculator.Calculate(parameters);
+
+        calculationHistoryService.SaveCalculationHistory(new CalculationHistory(
+            calcType,
+            parameters,
+            result
+        ));
+
         return result.MapToViewModel();
+    }
+
+    [HttpGet("history", Name = nameof(GetCaluclationHistory))]
+    public IReadOnlyCollection<CalculationHistoryViewModel> GetCaluclationHistory()
+    {
+        var history = calculationHistoryService.GetCalculationHistory();
+        return history.Select(x => x.MapToViewModel()).ToList();
     }
 }

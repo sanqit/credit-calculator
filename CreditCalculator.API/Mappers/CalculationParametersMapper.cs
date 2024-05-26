@@ -3,12 +3,17 @@
 using Core;
 using ViewModels;
 
-public static class CalculationParametersMapper
+internal static class CalculationParametersMapper
 {
     public static CalculationParameters MapFromViewModel(
         this CalculationParametersViewModel model
     ) =>
         new(model.Credit, model.Rate, model.Period);
+
+    public static CalculationParametersViewModel MapToViewModel(
+        this CalculationParameters parameters
+    ) =>
+        new(parameters.Credit, parameters.Rate, parameters.Period);
 
     public static CalculationResultViewModel MapToViewModel(
         this CalculationResult result
