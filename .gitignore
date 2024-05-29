@@ -244,3 +244,4 @@ ModelManifest.xml
 tempkey.rsa
 tempkey.jwk
 src/Tests/SL.Auth.API.Tests/coveragereport/
+volumes/
