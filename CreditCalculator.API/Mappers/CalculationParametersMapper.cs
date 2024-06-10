@@ -8,7 +8,7 @@ internal static class CalculationParametersMapper
     public static CalculationParameters MapFromViewModel(
         this CalculationParametersViewModel model
     ) =>
-        new(model.Credit, model.Rate, model.Period);
+        new(model.Credit, model.Rate / 100, model.Period);
 
     public static CalculationParametersViewModel MapToViewModel(
         this CalculationParameters parameters
