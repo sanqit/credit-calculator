@@ -1,5 +1,6 @@
 ﻿namespace CreditCalculator.API.Extensions;
 
+using Configuration;
 using Core;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,8 @@ public static class ServiceCollectionExtensions
     {
         var services = builder.Services;
         var configuration = builder.Configuration;
+
+        services.Configure<ServiceOptions>(configuration.GetRequiredSection(nameof(ServiceOptions)));
 
         services.AddScoped<CreditCalculatorFactory>();
         services.AddScoped<ICalculationHistoryService, CalculationHistoryService>();
