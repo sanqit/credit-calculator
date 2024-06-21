@@ -1,0 +1,55 @@
+version: '3.8'
+
+networks:
+  web:
+    external: true
+
+services:
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - --api=true
+      - --api.dashboard=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.websecure.address:=443
+      - --entrypoints.websecure.http.tls.domain[0].main=sanqit.ru
+      - --entrypoints.websecure.http.tls.domain[0].sans=*.sanqit.ru
+      - --api.debug=true
+      - --log=true
+      - --log.level=ERROR
+      - --providers.docker=true
+      - --providers.docker.network=web
+      - --providers.docker.exposedbydefault=fale
+      - --providers.file.directory=/etc/traefik/dynamic_conf
+    ports:
+      - 80:80
+      - 443:443
+    labels:
+      - traefik.enabled=true
+      - traefik.http.routers.traefik.entrypoints=websecure
+      - traefik.http.routers.traefik.rule=Host(`traefik.sanqit.ru`)
+      - traefik.http.routers.traefik.services=api@internal
+      - traefik.http.routers.traefik.middlewares=traefik-auth
+      ## Declaring the user list
+      ##
+      ## Note: when used in docker-compose.yml all dollar signs in the hash need to be doubled for escaping.
+      ## To create user:password pair, it's possible to use this command:
+      ## echo $(htpasswd -nB admin) | sed -e s/\\$/\\$\\$/g
+      ## sudo apt-get update && sudo apt-get install apache2-utils
+      ## Also note that dollar signs should NOT be doubled when they not evaluated (e.g. Ansible docker_container module).
+      - traefik.http.middlewares.traefik-auth.basicauth.user=admin:$$2y$$05$$dG46PRvKhP3Ef8nVXs7GYu58PPEY0w1BzeQCbjZBiZf1foKTHKMRC
+      - traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)
+      - traefik.http.routers.http-catchall.entrypoints=web
+      - traefik.http.routers.http-catchall.middlewares=redirect-to-https
+      ## middleware redirect
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /home/traefik/certs:/certs:ro
+      - ./traefik.yml:/etc/traefik/dynamic_conf/conf.yml:ro
+    networks:
+      - web

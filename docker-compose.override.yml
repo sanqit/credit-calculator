@@ -15,7 +15,13 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-
+    labels:
+      - traefik.enabled=true
+      - traefik.http.routers.creditcalculator_api_http.entrypoints=websecure
+      - traefik.http.routers.creditcalculator_api_http.rule=Host(`api.credit-calculator.sanqit.ru`)
+      - traefik.http.routers.creditcalculator_api_http.service=creditcalculator_api_http
+      - traefik.http.services.creditcalculator_api_http.loadbalancer.server.port=80
+      - traefik.http.services.creditcalculator_api_http.loadbalancer.server.scheme=http
   credit-calculator-db:
     environment:
       - POSTGRES_DB=postgres
@@ -37,3 +43,10 @@ services:
   creditcalculator.ui:
     ports:
       - "7123:80"
+    labels:
+      - traefik.enabled=true
+      - traefik.http.routers.creditcalculator_ui_http.entrypoints=websecure
+      - traefik.http.routers.creditcalculator_ui_http.rule=Host(`credit-calculator.sanqit.ru`)
+      - traefik.http.routers.creditcalculator_ui_http.service=creditcalculator_ui_http
+      - traefik.http.services.creditcalculator_ui_http.loadbalancer.server.port=80
+      - traefik.http.services.creditcalculator_ui_http.loadbalancer.server.scheme=http
