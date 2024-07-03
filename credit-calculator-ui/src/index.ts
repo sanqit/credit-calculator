@@ -5,7 +5,8 @@ import { CalcType, CalculationParameters } from "./models";
 import { printCalculationResult } from "./utils/print-helpers";
 import { createElement, render } from "./utils/render";
 
-const api = new Api("https://localhost:7081");
+//const api = new Api("https://localhost:7081");
+const api = new Api("https://api-credit-calculator.sanqit.ru");
 
 const app = document.querySelector("#app")!;
 

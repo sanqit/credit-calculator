@@ -1,5 +1,7 @@
 "# credit-calculator" 
 
+https://learn.microsoft.com/ru-ru/dotnet/core/install/linux-debian
+
 Создание pfx из pem файлов
 
 openssl pkcs12 -export -in fullchain.pem -inkey privkey.pem -out [name.pfx]
