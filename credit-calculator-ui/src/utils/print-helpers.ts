@@ -81,13 +81,13 @@ const printCalculationResult = (calculationResult: CalculationResult, container:
 }
 
 const createDiagramElement = (paymentInfos: PaymentInfo[]) => {
+    const maxPayment = paymentInfos[0].payment;
     return createElement<HTMLDivElement>(`
 <div class="diagram">${paymentInfos.map((paymentInfo) => {
+    const payment = paymentInfo.payment;
+    const percentWidth = payment * 100 / maxPayment;
     const left = paymentInfo.mainDebtPayment;
-    const right = paymentInfo.percentPayment;
-    const total = left + right;
-    const countLeft = left / total * 100;
-    return `<progress value="${countLeft}" max="100"></progress>`
+    return `<progress value="${left}" max="${payment}" style="width: ${percentWidth}%;"></progress>`
 }).join("")}
 </div>
 `);
